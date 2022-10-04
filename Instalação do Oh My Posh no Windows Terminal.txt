@@ -1,0 +1,120 @@
+### Modificar a Política de Execução do Powershell para RemoteSigned
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+### Oh My Posh
+
+**A prompt theme engine for any shell.**
+
+Site: [https://ohmyposh.dev](https://ohmyposh.dev/)
+
+winget install JanDeDobbeleer.OhMyPosh -s winget
+winget upgrade JanDeDobbeleer.OhMyPosh -s winget
+oh-my-posh get shell
+New-Item -Path $PROFILE -Type File -Force
+oh-my-posh init pwsh | Invoke-Expression
+
+Install-Module oh-my-posh -Scope CurrentUser
+Import-Module oh-my-posh
+
+### PoshGit
+
+A PowerShell environment for Git.
+
+Site: [https://github.com/dahlbyk/posh-git](https://github.com/dahlbyk/posh-git)
+
+Install-Module posh-git -Scope CurrentUser
+Import-Module posh-git
+
+### PSReadLine
+
+A bash inspired readline implementation for PowerShell.
+
+Site: [https://github.com/PowerShell/PSReadLine](https://github.com/PowerShell/PSReadLine)
+
+Install-Module PSReadLine -Force
+Import-Module PSReadLine
+
+### Get-ChildItemColor
+
+Add coloring to the output of Get-ChildItem Cmdlet of PowerShell.
+
+Site: [https://github.com/joonro/Get-ChildItemColor](https://github.com/joonro/Get-ChildItemColor)
+
+Install-Module -AllowClobber Get-ChildItemColor
+Import-Module Get-ChildItemColor
+
+### Terminal Icons
+
+A PowerShell module to show file and folder icons in the terminal.
+
+Site: [https://github.com/devblackops/Terminal-Icons](https://github.com/devblackops/Terminal-Icons)
+
+Install-Module Terminal-Icons -Repository PSGallery
+Import-Module Terminal-Icons
+
+### DockerCompletion
+
+Docker command completion for PowerShell. Só se Tiver o Docer Instalado
+
+Site: [https://github.com/matt9ucci/DockerCompletion](https://github.com/matt9ucci/DockerCompletion)
+
+Install-Module DockerCompletion -Scope CurrentUser
+Import-Module DockerCompletion
+
+## Configuração
+
+### Criar o arquivo de Profile
+
+code $PROFILE
+
+$MaximumHistoryCount = 20000
+
+# Configurações do PowerShell
+Import-Module posh-git
+#Import-Module oh-my-posh
+Import-Module PSReadline
+Import-Module Get-ChildItemColor
+Import-Module Terminal-Icons
+Import-Module DockerCompletion
+
+# Autocomplete, keybinds e histórico de comandos
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadlineOption -HistorySearchCursorMovesToEnd
+
+# Autosugestões do PSReadline
+Set-PSReadlineOption -ShowToolTips
+Set-PSReadlineOption -PredictionSource History
+
+# Configuração e Temas do OH-MY-POSH
+oh-my-posh --init --shell pwsh --config ~\AppData\Local\Programs\oh-my-posh\themes\quick-term.omp.json | Invoke-Expression
+
+# Aliases
+Set-Alias limpeza C:\Script\limpeza.bat
+
+#Set-Alias winfetch pwshfetch-test-1
+
+#(Invoke-WebRequest "https://raw.githubusercontent.com/kiedtl/winfetch/master/winfetch.ps1" -UseBasicParsing).Content.Remove(0,1) | Invoke-Expression
+
+# Functions
+function procurar() {winget search $args}
+function update() {winget upgrade $args}
+function upgrade() {winget upgrade $args}
+function atualizar() {winget upgrade --all $args}
+function instalar() {winget install $args}
+function profile() {code $PROFILE}
+function ..() {Set-Location ".."}
+function ....() {Set-Location "..\.."}
+function ......() {Set-Location "..\..\.."}
+
+# Compute file hashes - useful for checking successful downloads
+function md5    { Get-FileHash -Algorithm MD5 $args }
+function sha1   { Get-FileHash -Algorithm SHA1 $args }
+function sha256 { Get-FileHash -Algorithm SHA256 $args }
+function tail { Get-Content $args -Tail 30 -Wait }
+function take {
+  New-Item -ItemType directory $args
+  Set-Location "$args"
+}
