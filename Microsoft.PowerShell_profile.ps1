@@ -23,11 +23,19 @@ oh-my-posh --init --shell pwsh --config ~\AppData\Local\Programs\oh-my-posh\them
 
 # Aliases
 Set-Alias limpeza C:\Script\limpeza.bat
+
 Set-Alias ls la
 Set-Alias l lb
+
 Set-Alias which Get-Command
 Set-Alias open Invoke-Item
+
 Set-Alias limpar clear
+
+# History definitions
+$HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
+Register-EngineEvent PowerShell.Exiting -Action { Get-History | Export-Clixml $HistoryFilePath } | out-null
+if (Test-path $HistoryFilePath) { Import-Clixml $HistoryFilePath | Add-History }
 
 #Set-Alias winfetch pwshfetch-test-1
 
@@ -39,7 +47,12 @@ function update()   {winget upgrade $args}
 function upgrade()  {winget upgrade $args}
 function atualizar(){winget upgrade --all $args}
 function instalar() {winget install $args}
+#Edição dos Profiles do WindowsTerminal e PowerShell
 function profile()  {code $PROFILE}
+function settings.json() {code "$HOME\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"}
+#Arquivo de Historico do powerShell
+function history()  {code "$HOME\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"}
+
 function ..()       {Set-Location ".."}
 function ....()     {Set-Location "..\.."}
 function ......()   {Set-Location "..\..\.."}
@@ -62,6 +75,7 @@ function github()   {Set-Location "D:\GitRepositorio"}
 function md5        {Get-FileHash -Algorithm MD5 $args}
 function sha1       {Get-FileHash -Algorithm SHA1 $args}
 function sha256     {Get-FileHash -Algorithm SHA256 $args}
+
 function tail       {Get-Content $args -Tail 30 -Wait}
 function take       {
   New-Item -ItemType directory $args
